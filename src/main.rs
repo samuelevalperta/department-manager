@@ -7,15 +7,36 @@ fn main() {
     loop {
         let mut input: String = String::new();
         std::io::stdin().read_line(&mut input).unwrap();
-
-        let input: Vec<&str> = input.trim().split_whitespace().collect();
-
-        if input.len() == 4 {
-            todo!("TODO: Add employee to department")
-        } else if input.len() == 3 {
-            todo!("TODO: List employee")
+        let input: Vec<&str> = input.split_whitespace().collect();
+        if input[0].eq_ignore_ascii_case("add") {
+            let name = input[1].to_string();
+            let department = input[3].to_string();
+            let department = company.entry(department).or_default();
+            department.push(name.to_string());
+        } else if input[0].eq_ignore_ascii_case("list") {
+            let department = input[1].to_string();
+            if department.eq_ignore_ascii_case("all") {
+                let mut all: Vec<String> = Vec::new();
+                for employees in company.values() {
+                    for employee in employees {
+                        all.push(employee.to_string())
+                    }
+                }
+                all.sort();
+                println!("{:?}", all)
+            } else {
+                let department = company.get(&department);
+                match department {
+                    Some(employees) => {
+                        let mut v = employees.clone();
+                        v.sort();
+                        println!("{:?}", v)
+                    }
+                    None => println!("Department not found"),
+                }
+            }
         } else {
-            println!("Unknown command {:?}", input.concat())
+            println!("Unknown command {:?}", input.join(" "))
         }
     }
 }
