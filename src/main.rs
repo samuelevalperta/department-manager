@@ -5,16 +5,20 @@ fn main() {
         std::collections::HashMap::new();
 
     loop {
+        // Get input
         let mut input: String = String::new();
         std::io::stdin().read_line(&mut input).unwrap();
         let input: Vec<&str> = input.split_whitespace().collect();
+        // Add user to department
         if input[0].eq_ignore_ascii_case("add") {
             let name = input[1].to_string();
             let department = input[3].to_string();
             let department = company.entry(department).or_default();
             department.push(name.to_string());
+        // List user
         } else if input[0].eq_ignore_ascii_case("list") {
             let department = input[1].to_string();
+            // If no department is given list all users
             if department.eq_ignore_ascii_case("all") {
                 let mut all: Vec<String> = Vec::new();
                 for employees in company.values() {
@@ -24,6 +28,7 @@ fn main() {
                 }
                 all.sort();
                 println!("{:?}", all)
+            // If a department is specified list only users that belong to it
             } else {
                 let department = company.get(&department);
                 match department {
@@ -35,6 +40,7 @@ fn main() {
                     None => println!("Department not found"),
                 }
             }
+        // Command not valid
         } else {
             println!("Unknown command {:?}", input.join(" "))
         }
